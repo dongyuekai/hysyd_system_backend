@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/registerUserDto';
 import { User } from './entities/user.entity';
 import { RedisService } from 'src/redis/redis.service';
+import { Role } from './entities/role.entity';
+import { Permission } from './entities/permission.entity';
 
 @Injectable()
 export class UserService {
@@ -17,6 +19,12 @@ export class UserService {
 
   @InjectRepository(User)
   private userRepository: Repository<User>;
+
+  @InjectRepository(Role)
+  private roleRepository: Repository<Role>;
+
+  @InjectRepository(Permission)
+  private permissionRepository: Repository<Permission>;
 
   @Inject(RedisService)
   private redisService: RedisService;
