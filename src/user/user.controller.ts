@@ -17,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { RequireLogin, UserInfo } from 'src/user.custom.decorator';
 import { UserDetailVo } from './vo/user-info.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -207,6 +208,7 @@ export class UserController {
     return vo;
   }
 
+  // 更改密码
   @Post(['update_password', 'admin/update_password'])
   @RequireLogin()
   async updatePassword(
@@ -216,7 +218,7 @@ export class UserController {
     return await this.userService.updatePassword(userId, passwordDto);
   }
 
-  // 更改验证码 通过邮箱发邮件
+  // 更改密码 发验证码
   @Get('update_password/captcha')
   async updatePasswordCaptcha(@Query('address') address: string) {
     const code = Math.random().toString().slice(2, 8);
@@ -233,5 +235,31 @@ export class UserController {
       html: `<p>你的更改密码验证码是 ${code}</p>`,
     });
     return '发送成功';
+  }
+
+  // 更改个人信息
+  @Get(['update', 'admin/update'])
+  @RequireLogin()
+  async update(
+    @UserInfo('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.update(userId, updateUserDto);
+  }
+  // 更改个人信息 发验证码
+  @Get('update/captcha')
+  async updateCaptcha(@Query('address') address: string) {
+    const code = Math.random().toString().slice(2, 8);
+    await this.redisService.set(
+      `update_user_captcha_${address}`,
+      code,
+      10 * 60,
+    );
+
+    await this.emailService.sendMail({
+      to: address,
+      subject: '更改个人信息验证码',
+      html: `<p>你的验证码是${code}</p>`,
+    });
   }
 }
