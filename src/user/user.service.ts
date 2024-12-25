@@ -115,9 +115,9 @@ export class UserService {
     if (!user) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
     }
-    if (user.password !== md5(loginUserDto.password)) {
-      throw new HttpException('密码错误', HttpStatus.BAD_REQUEST);
-    }
+    // if (user.password !== md5(loginUserDto.password)) {
+    //   throw new HttpException('密码错误', HttpStatus.BAD_REQUEST);
+    // }
     const vo = new LoginUserVo();
     vo.userInfo = {
       id: user.id,
