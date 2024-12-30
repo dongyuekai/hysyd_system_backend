@@ -7,9 +7,15 @@ import { InvokeRecordInterceptor } from './invoke-record.interceptor';
 import { UnloginFilter } from './unlogin.filter';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // 将uploads文件夹设置为静态文件夹 这样就可以通过http://localhost:3005/uploads/xxx.jpg访问到上传的图片
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads',
+  });
 
   // 全局启用ValidationPipe
   app.useGlobalPipes(new ValidationPipe());
