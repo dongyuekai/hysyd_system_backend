@@ -29,6 +29,7 @@ export class MeetingRoom {
     comment: '会议室位置',
   })
   location: string;
+
   @Column({
     length: 50,
     comment: '设备',
